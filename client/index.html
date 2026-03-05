@@ -948,16 +948,42 @@
             const placket = placketOptions.find(p => p.value === state.placketUrl);
             const orderData = {
                 style: {
-                    collar: collar ? collar.name : "Custom",
-                    placket: placket ? placket.name : "Custom",
-                    sleeve: selectSleeve.value,
-                    cuff: selectSleeve.value === 'Half' ? 'N/A' : selectCuff.options[selectCuff.selectedIndex].text,
-                    fabric: fabric ? fabric.name : "Unknown",
-                    contrast: state.whiteContrast
+                collar: collar ? collar.name : "Custom",
+                placket: placket ? placket.name : "Custom",
+                sleeve: selectSleeve.value,
+                cuff: selectSleeve.value === 'Half' ? 'N/A' : selectCuff.options[selectCuff.selectedIndex].text,
+                fabric: fabric ? fabric.name : "Unknown",
+                contrast: state.whiteContrast
                 },
                 measurements: state.measurements
             };
             console.log('Order Data Uploaded:', orderData);
+
+    // ────────────────────────────────────────────────────────────────
+    // ADD THIS BLOCK: Send config summary to the parent Site123 page
+            const configSummary = `
+            Custom Shirt Configured:
+            • Fabric: ${fabric ? fabric.name : 'N/A'}
+            • Collar: ${collar ? collar.name : 'N/A'}
+            • Placket: ${placket ? placket.name : 'N/A'}
+            • Sleeve: ${selectSleeve.value || 'N/A'}
+            • Cuff: ${selectSleeve.value === 'Half' ? 'N/A' : selectCuff.options[selectCuff.selectedIndex].text || 'N/A'}
+            • White Contrast: ${state.whiteContrast ? 'Yes' : 'No'}
+            • Measurements: ${Object.keys(state.measurements).length > 0 ? JSON.stringify(state.measurements) : 'Not provided'}
+            `.trim().slice(0, 480);  // safe limit under 500 chars
+
+            window.parent.postMessage({
+                type: 'ADD_CUSTOM_SHIRT_TO_CART',
+                description: configSummary
+            }, 'https://www.hexneedle.com');   // your exact domain (use '*' for local testing)
+
+    // Optional: keep or change the toast message
+            const toast = document.getElementById('toast');
+            toast.textContent = "Added to cart! Config sent to site.";  // optional nicer message
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+    // ────────────────────────────────────────────────────────────────
+        };
             
             // In a real app, you'd send this to your backend
             // await fetch('/api/cart', { method: 'POST', body: JSON.stringify(orderData) });
