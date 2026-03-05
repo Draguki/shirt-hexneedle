@@ -946,6 +946,7 @@
             const fabric = fabrics.find(f => f.value === currentFabric);
             const collar = collarOptions.find(c => c.value === state.collarUrl);
             const placket = placketOptions.find(p => p.value === state.placketUrl);
+    
             const orderData = {
                 style: {
                     collar: collar ? collar.name : "Custom",
@@ -957,14 +958,33 @@
                 },
                 measurements: state.measurements
             };
+    
             console.log('Order Data Uploaded:', orderData);
-            
-            // In a real app, you'd send this to your backend
-            // await fetch('/api/cart', { method: 'POST', body: JSON.stringify(orderData) });
 
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+    // ────────────────────────────────────────────────
+    // YEH NAYA CODE HAI – YAHAN SE DAALO
+            const configSummary = `
+        Custom Shirt:
+        • Fabric: ${fabric ? fabric.name : 'N/A'}
+        • Collar: ${collar ? collar.name : 'N/A'}
+        • Placket: ${placket ? placket.name : 'N/A'}
+        • Sleeve: ${selectSleeve.value || 'N/A'}
+        • Cuff: ${selectSleeve.value === 'Half' ? 'N/A' : (selectCuff.options[selectCuff.selectedIndex]?.text || 'N/A')}
+        • White Contrast: ${state.whiteContrast ? 'Yes' : 'No'}
+        • Measurements: ${Object.keys(state.measurements).length ? JSON.stringify(state.measurements) : 'None'}
+            `.trim();
+
+            window.parent.postMessage({
+                type: 'ADD_CUSTOM_SHIRT_TO_CART',
+                description: configSummary
+                }, '*');  // Testing ke liye '*' rakho, baad mein 'https://www.hexneedle.vercel.app' kar dena
+
+    // Toast message thoda change kar sakte ho (optional)
+                const toast = document.getElementById('toast');
+                toast.textContent = "Shirt added! Cart mein ja raha hai...";
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+    // ────────────────────────────────────────────────
         };
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
