@@ -975,9 +975,17 @@
             `.trim();
 
             window.parent.postMessage({
+                window.parent.postMessage({
                 type: 'ADD_CUSTOM_SHIRT_TO_CART',
-                description: configSummary
-                }, '*');  // Testing ke liye '*' rakho, baad mein 'https://www.hexneedle.vercel.app' kar dena
+                description: `Custom Shirt Config:
+                • Fabric: ${fabricName}
+                • Collar: ${collarName}
+                • Placket: ${placketName}
+                • Sleeve: ${sleeveType}
+                • Cuff: ${cuffType}
+                • White Contrast: ${whiteContrast}
+                • Measurements: ${JSON.stringify(measurements)}`
+            }, '*');;  // Testing ke liye '*' rakho, baad mein 'https://www.hexneedle.vercel.app' kar dena
 
     // Toast message thoda change kar sakte ho (optional)
                 const toast = document.getElementById('toast');
